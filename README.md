@@ -85,6 +85,108 @@ class EntropyFlow:
         }
 ```
 
+### Energy Matrix
+
+$$E_{ik} = \|x_i - \mu_k\|^2$$
+
+```python
+def calculate_energy_matrix(self, X, centers):
+        distances = cdist(X, centers)  # shape (N, K)
+        return distances**2
+```
+
+$$ p_{ik} = \frac{\exp(-E_{ik}/T)}{Z}, \quad Z = \sum_k \exp(-E_{ik}/T)  $$
+
+```python
+def calculate_probabilities(self, energy_matrix):
+    exp_term = np.exp(-energy_matrix / temperature)
+    Z = np.sum(exp_term, axis=1, keepdims=True)
+    return exp_term / Z
+```
+
+
+### Thermodynamic State
+
+$$ 
+U = \sum p_{ik} E_{ik}, \quad S = -\sum p_{ik} \log p_{ik}, \quad F = U - T S
+$$
+
+```python
+def _calculate_thermodynamics(self, X):
+
+    # energy
+    energy_matrix = self.calculate_energy_matrix(X, self.cluster_centers_)
+    probs = self.calculate_probabilities(energy_matrix)
+    energy = np.sum(probs * energy_matrix)
+
+    # entropy
+    probs = np.clip(probs, 1e-10, 1.0) # avoid log(0)
+    entropy = -np.sum(probs * np.log(probs))
+
+    # free energy
+    free_energy = energy - self.temperature * entropy
+
+    return free_energy, energy, entropy, probs
+```
+
+
+### Update Step
+
+$$
+\mu_k = \frac{\sum_i p_{ik} x_i}{\sum_i p_{ik}}
+$$
+
+```python
+def _get_updated_centers(self, X, probabilities):
+    weighted_sum = np.dot(probabilities.T, X)
+    weights_sum = np.sum(probabilities, axis=0)
+    weights_sum = np.maximum(weights_sum, 1e-8) # avoid division by zero
+    return weighted_sum / weights_sum[:, np.newaxis]
+```
+
+---
+
+### Fit Loop: Annealing-Based Evolution
+
+```python
+def fit(self, X):
+    n_samples, n_features = X.shape
+
+    # initialize cluster centers
+    idx = np.random.choice(n_samples, self.n_clusters, replace=False)
+    self.cluster_centers_ = X[idx].copy()
+
+    iteration = 0
+    while self.temperature > self.min_temp and iteration < self.max_iter:
+
+        F, U, S, probs = self._calculate_thermodynamics(X)
+
+        self.history['temperature'].append(self.temperature)
+        self.history['energy'].append(U)
+        self.history['entropy'].append(S)
+        self.history['free_energy'].append(F)
+        self.history['centers'].append(self.cluster_centers_.copy())
+
+        # updates
+        self.cluster_centers_ = self._get_updated_centers(X, probs)
+        self.temperature *= self.cooling_rate
+        iteration += 1
+
+
+    self.labels_ = self.predict(X)
+    return self
+```
+
+
+### Predict Labels
+
+```python
+def predict(self, X):
+    distances = cdist(X, self.cluster_centers_)
+    return np.argmin(distances, axis=1)
+```
+
+
 
 ## Experimental Results
 
