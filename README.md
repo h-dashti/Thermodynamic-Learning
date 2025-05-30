@@ -6,7 +6,6 @@
 
 Within this broad framework, **EntropyFlow** is a specific implementation that focuses on **unsupervised structure discovery**, demonstrating how learning systems can evolve over time through **temperature-driven dynamics**—exploring freely at high entropy and settling into stable patterns as the system cools.
 
----
 
 ## The Core Idea: Learning as Thermodynamic Evolution
 
@@ -28,7 +27,7 @@ Where:
 * High temperature allows for **exploration** and flexibility.
 * Low temperature promotes **convergence** and stable structures.
 
----
+
 
 ## EntropyFlow: A Clustering Model within Thermodynamic Learning
 
@@ -66,7 +65,7 @@ $$
 
 These quantities evolve over time, revealing how the system transitions from **disorder** to **structure**.
 
----
+
 
 ## The Code: EntropyFlow in Action
 
@@ -86,9 +85,6 @@ class EntropyFlow:
         }
 ```
 
-*(Include the rest of your code sections here as previously drafted)*.
-
----
 
 ## Experimental Results
 
@@ -96,10 +92,10 @@ EntropyFlow has been benchmarked against **k-means clustering** on synthetic dat
 
 | Model       | ARI   | NMI   |
 | ----------- | ----- | ----- |
-| EntropyFlow | 0.934 | 0.935 |
-| k-Means     | 0.712 | 0.850 |
+| EntropyFlow | 0.941 | 0.940 |
+| k-Means     | 0.724 | 0.856 |
 
----
+
 
 ## Visualisation & Interpretation
 
@@ -110,7 +106,6 @@ EntropyFlow provides insights into the **evolution of learning systems** by visu
 * The formation of clusters in complex data landscapes
 * Comparisons to baseline methods like k-means
 
----
 
 ## Future Directions
 
@@ -121,7 +116,7 @@ EntropyFlow provides insights into the **evolution of learning systems** by visu
 * **Reinforcement learning** (reward as energy, exploration as entropy)
 * **Graph and sequential data** (thermodynamic message-passing)
 
----
+
 
 ## Contributions
 
