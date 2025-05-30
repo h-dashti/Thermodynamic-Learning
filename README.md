@@ -144,7 +144,6 @@ def _get_updated_centers(self, X, probabilities):
     return weighted_sum / weights_sum[:, np.newaxis]
 ```
 
----
 
 ### Fit Loop: Annealing-Based Evolution
 
