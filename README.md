@@ -189,12 +189,16 @@ def predict(self, X):
 
 ## Experimental Results
 
+![alt text](figs/clusters.png "True and Predicted Clusters using EntropyFlow method")
+
 EntropyFlow has been benchmarked against **k-means clustering** on synthetic datasets, demonstrating improved performance in capturing subtle, emergent structures:
 
 | Model       | ARI   | NMI   |
 | ----------- | ----- | ----- |
 | EntropyFlow | 0.941 | 0.940 |
 | k-Means     | 0.724 | 0.856 |
+
+
 
 
 
